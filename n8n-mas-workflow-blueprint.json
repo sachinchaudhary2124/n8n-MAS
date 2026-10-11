@@ -1,0 +1,91 @@
+{
+  "document_type": "n8n_multi_agent_workflow_blueprint",
+  "title": "Assignment 4 - Multi-Agent System (MAS) with n8n",
+  "status": "descriptive_blueprint_not_native_n8n_export",
+  "important_note": "This JSON documents the workflow inferred from the provided screenshots. It is not a verified native n8n workflow export and may not import into n8n. To obtain an import-ready workflow, export the actual workflow from your n8n instance using Download/Export workflow.",
+  "purpose": "Demonstrate sequential orchestration of two AI Agent nodes, with a Groq Chat Model, Simple Memory, and a Tavily web-search tool.",
+  "observed_components": [
+    {
+      "name": "When chat message received",
+      "type": "n8n chat trigger",
+      "purpose": "Starts a run when a user submits a chat message."
+    },
+    {
+      "name": "AI Agent",
+      "type": "AI Agent",
+      "purpose": "Processes the incoming user request according to its configured prompt and connected model/tools."
+    },
+    {
+      "name": "AI Agent1",
+      "type": "AI Agent",
+      "purpose": "Receives the first agent's output and performs the next configured agent step."
+    },
+    {
+      "name": "Groq Chat Model",
+      "type": "Groq Chat Model",
+      "purpose": "Provides language-model inference for the connected agent node(s)."
+    },
+    {
+      "name": "Simple Memory",
+      "type": "Simple Memory",
+      "purpose": "Provides conversation context to the agent connection shown in the workflow."
+    },
+    {
+      "name": "Search the web in Tavily",
+      "type": "Tavily Search Tool",
+      "purpose": "Allows the connected agent to search the web when its configuration calls for it."
+    }
+  ],
+  "observed_sequence": [
+    {
+      "step": 1,
+      "from": "When chat message received",
+      "to": "AI Agent",
+      "description": "The chat message triggers the workflow and enters the first agent."
+    },
+    {
+      "step": 2,
+      "from": "AI Agent",
+      "to": "AI Agent1",
+      "description": "The first agent's output is passed to the second agent."
+    },
+    {
+      "step": 3,
+      "from": "Groq Chat Model",
+      "to": "AI Agent / AI Agent1",
+      "description": "The model is connected as an agent language model; exact connection mapping should be verified against the original n8n canvas."
+    },
+    {
+      "step": 4,
+      "from": "Simple Memory",
+      "to": "connected AI Agent node(s)",
+      "description": "Memory is attached to the agent connection shown in the original workflow screenshot."
+    },
+    {
+      "step": 5,
+      "from": "Search the web in Tavily",
+      "to": "connected AI Agent node",
+      "description": "Tavily is exposed as a tool to the connected agent; the exact agent and runtime invocation should be checked in n8n."
+    },
+    {
+      "step": 6,
+      "from": "AI Agent1",
+      "to": "Chat response",
+      "description": "The workflow returns the resulting response to the chat interface."
+    }
+  ],
+  "test_example": {
+    "user_query": "Who is Leo Messi?",
+    "expected_behavior": "The agents produce a natural-language response about Lionel Messi according to their configured prompts and available tools.",
+    "verification_note": "Do not claim a response was web-verified unless the n8n execution trace confirms that Tavily was called for that run."
+  },
+  "configuration_to_verify_in_n8n": [
+    "System prompts and exact responsibilities of both AI Agent nodes",
+    "Which agent has the Tavily tool connected",
+    "Which agent(s) use Simple Memory",
+    "Groq credential selection and model name",
+    "Tavily credential selection and search settings",
+    "Final output/response wiring"
+  ],
+  "security": "Do not include API keys or credential secrets in this file or in the public repository. Configure credentials inside your own n8n instance."
+}
